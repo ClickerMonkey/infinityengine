@@ -9,6 +9,9 @@
 - Filter Type: a type of element to use to search through one or more fields. ex: Autocomplete, Multiselect, Checkbox
 - Search: a collection of filters which can look through one or more entity types.
 - Query: an instance of a search that can be used to filter through all entities or a subset (relationship)
+- View: a set of properties, subproperties, and relationships from an entity to use to display. ex: Search Result
+- Widget: takes a view and one or more entities and renders them
+- Page: links a url pattern with a set of widgets
 
 ## Design
 ```
@@ -16,7 +19,8 @@ entity { id, entity_type_id }
 entity_type { id, name, machine_name }
 entity_type_summary { id, entity_type, name, template }   
 entity_summary { entity_id, entity_type_summary_id, summary }
-field_type { id, name, 
+field_type { id, name, data_type, data_type_properties, input_type, input_type_properties }
+entity_type_field { entity_type_id, field_type_id }
 ```
 
 ## Explanations
@@ -80,7 +84,7 @@ dataType = {
     },
     custom: {
       inputs: {
-        pattern: /* definition */
+        pattern: { default, required, help }
       },
       parse: function(value, inputs) {}
     }
@@ -94,8 +98,12 @@ inputType = {
   machine_name: 'date_picker',
   types: ['date', 'text'],
   properties: {
-    min: /* definition */,
-    max: /* definition */
+    min: {
+      default: null,
+      help: 'The minimum date, absolute or relative, that can be selected',
+      required: true
+    },
+    max: { default, help, required }
   },
   generate: function(type, properties, value, format) {}
 }
